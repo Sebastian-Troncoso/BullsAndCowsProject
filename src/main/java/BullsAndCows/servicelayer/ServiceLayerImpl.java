@@ -10,7 +10,7 @@ import com.mysql.cj.util.StringUtils;
 import java.util.Random;
 
 public class ServiceLayerImpl implements ServiceLayer {
-    BullsAndCowsDao dao = new BullsAndCowsDaoDbImpl();
+
     RandomNumberNoDuplicate r = new RandomNumberNoDuplicate();
 
     private void checkValidation(String inputGuess)
