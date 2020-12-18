@@ -35,71 +35,29 @@ public class BullsAndCowsDaoDbImpl {
         }
     }
 
-    private static void addItem() throws SQLException {
-        System.out.println("Add Item");
-        System.out.println("What is the task?");
-        String task = sc.nextLine();
-        System.out.println("Any additional notes?");
-        String note = sc.nextLine();
+    public void addGame(String answer) throws SQLException {
+
         
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO todo(todo, note) VALUES(?,?)";
+            String sql = "INSERT INTO Round(GameID, ) VALUES(?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, task);
-            pStmt.setString(2, note);
+            pStmt.setString(1, answer);
             pStmt.executeUpdate();
             System.out.println("Add Complete");
         }
     }
+    
+    
 
-    private static void updateItem() throws SQLException {
-        System.out.println("Update Item");
-        System.out.println("Which item do you want to update?");
-        String itemId = sc.nextLine();
-        try( Connection conn = ds.getConnection()) {
-            String sql = "SELECT * FROM todo WHERE id = ?";
+    public void addRound(String GameId, int round, String userGuess, int partialMatch, int ExactMatch ) throws SQLException {
+
+        
+        try (Connection conn = ds.getConnection()) {
+            String sql = "INSERT INTO Group(Answer) VALUES(?, True)";
             PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, itemId);
-            ResultSet rs = pStmt.executeQuery();
-            rs.next();
-            ToDo td = new ToDo();
-            td.setId(rs.getInt("id"));
-            td.setTodo(rs.getString("todo"));
-            td.setNote(rs.getString("note"));
-            td.setFinished(rs.getBoolean("finished"));
-            System.out.println("1. ToDo - " + td.getTodo());
-            System.out.println("2. Note - " + td.getNote());
-            System.out.println("3. Finished - " + td.isFinished());
-            System.out.println("What would you like to change?");
-
-            String choice = sc.nextLine();
-            switch(choice) {
-                case "1":
-                    System.out.println("Enter new ToDo:");
-                    String todo = sc.nextLine();
-                    td.setTodo(todo);
-                    break;
-                case "2":
-                    System.out.println("Enter new Note:");
-                    String note = sc.nextLine();
-                    td.setNote(note);
-                    break;
-                case "3":
-                    System.out.println("Toggling Finished to " + !td.isFinished());
-                    td.setFinished(!td.isFinished());
-                    break;
-                default:
-                    System.out.println("No change made");
-                    return;
-            }
-            String updateSql = "UPDATE todo SET todo = ?, note = ?, finished = ? WHERE id = ?";
-            PreparedStatement updatePStmt = conn.prepareCall(updateSql);
-            updatePStmt.setString(1, td.getTodo());
-            updatePStmt.setString(2, td.getNote());
-            updatePStmt.setBoolean(3, td.isFinished());
-            updatePStmt.setInt(4, td.getId());
-            updatePStmt.executeUpdate();
-            System.out.println("Update Complete");
+            pStmt.setString(1, GameId);
+            pStmt.executeUpdate();
+            System.out.println("Add Complete");
         }
     }
 
