@@ -20,18 +20,35 @@ import javax.sql.DataSource;
 public class BullsAndCowsDaoDbImpl {
     
     private static DataSource ds;
-    private static void displayList() throws SQLException {
+    
+    public ResultSet getAllGames() throws SQLException {
         try ( Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM todo");
-            while (rs.next()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Game");
+            /*while (rs.next()) {
                 System.out.printf("%s: %s -- %s -- %s\n",
                         rs.getString("id"),
                         rs.getString("todo"),
                         rs.getString("note"),
                         rs.getBoolean("finished"));
-            }
-            System.out.println("");
+            }*/
+            return rs;
+        }
+    }
+    
+    public ResultSet getRounds(String gameId) throws SQLException{
+        try( Connection conn = ds.getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Round WHERE GameId = " + gameId );
+            return rs;
+        }
+    }
+    
+    public ResultSet getGame(String gameId) throws SQLException{
+        try( Connection conn = ds.getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Game WHERE GameId = " + gameId );
+            return rs;
         }
     }
 
@@ -39,40 +56,36 @@ public class BullsAndCowsDaoDbImpl {
 
         
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Round(GameID, ) VALUES(?)";
+            String sql = "INSERT INTO Game(GameID, ) VALUES(?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, answer);
             pStmt.executeUpdate();
-            System.out.println("Add Complete");
+            //System.out.println("Add Complete");
         }
     }
-    
-    
 
-    public void addRound(String GameId, int round, String userGuess, int partialMatch, int ExactMatch ) throws SQLException {
-
-        
+    public void addRound(String gameId, int round, String userGuess, int partialMatch, int ExactMatch ) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Group(Answer) VALUES(?, True)";
+            String sql = "INSERT INTO Round(GameID, round, guess, partialMatch, ExactMatch) VALUES(?, ?,?,?,?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, GameId);
+            pStmt.setString(1, gameId);
+            pStmt.setInt(2, round);
+            pStmt.setString(3, userGuess);
+            pStmt.setInt(4, partialMatch);
+            pStmt.setInt(5, ExactMatch);
             pStmt.executeUpdate();
-            System.out.println("Add Complete");
+            //System.out.println("Add Complete");
         }
     }
 
-    private static void removeItem() throws SQLException {
-        System.out.println("Remove Item");
-        System.out.println("Which item would you like to remove?");
-        String itemId = sc.nextLine();
-        
-        try(Connection conn = ds.getConnection()) {
-            String sql = "DELETE FROM todo WHERE id = ?";
+    public void updateGameStatus(String gameId) throws SQLException{
+        try (Connection conn = ds.getConnection()) {
+            String sql = "UPDATE Game SET  finished = True WHERE id = ?";
             PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, itemId);
+            pStmt.setString(1, gameId);
             pStmt.executeUpdate();
-            System.out.println("Remove Complete");
-        }    
+            //System.out.println("Update Complete");
+        }
     }
     
     private static DataSource getDataSource() throws SQLException {
