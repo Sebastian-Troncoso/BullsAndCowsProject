@@ -17,10 +17,20 @@ import javax.sql.DataSource;
  *
  * @author johnr
  */
-public class BullsAndCowsDaoDbImpl {
+public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     
     private static DataSource ds;
-    
+
+    @Override
+    public void setUpDatabase() {
+        try {
+            ds = getDataSource();
+        } catch (SQLException ex) {
+            System.out.println("Error connection to database");
+            System.out.println(ex.getMessage());
+            System.exit(0);
+        }
+    }
     public ResultSet getAllGames() throws SQLException {
         try ( Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
@@ -52,12 +62,12 @@ public class BullsAndCowsDaoDbImpl {
         }
     }
 
-    public void addGame(String answer) throws SQLException {
+    public void addGame(String hiddenAnswer) throws SQLException {
 
         try (Connection conn = ds.getConnection()) {
             String sql = "INSERT INTO Game(GameID) VALUES(?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, answer);
+            pStmt.setString(1, hiddenAnswer);
             pStmt.executeUpdate();
             //System.out.println("Add Complete");
         }
@@ -86,8 +96,8 @@ public class BullsAndCowsDaoDbImpl {
             //System.out.println("Update Complete");
         }
     }
-    
-    private static DataSource getDataSource() throws SQLException {
+
+    private DataSource getDataSource() throws SQLException {
         MysqlDataSource ds = new MysqlDataSource();
         ds.setServerName("localhost");
         ds.setDatabaseName("BullsAndCowsDB");

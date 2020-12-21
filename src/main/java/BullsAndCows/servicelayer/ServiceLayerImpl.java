@@ -1,5 +1,6 @@
 package BullsAndCows.servicelayer;
 
+
 import BullsAndCows.dao.BullsAndCowsDao;
 import BullsAndCows.dao.BullsAndCowsDaoDbImpl;
 import BullsAndCows.dto.RandomNumberNoDuplicate;
@@ -7,11 +8,14 @@ import BullsAndCows.exception.InputGuessInvalidException;
 import BullsAndCows.exception.InputGuessInvalidLength;
 import com.mysql.cj.util.StringUtils;
 
-import java.util.Random;
+import java.sql.SQLException;
 
 public class ServiceLayerImpl implements ServiceLayer {
 
-    RandomNumberNoDuplicate r = new RandomNumberNoDuplicate();
+    RandomNumberNoDuplicate numberGenerator = new RandomNumberNoDuplicate();
+    BullsAndCowsDao dao = new BullsAndCowsDaoDbImpl();
+    String hiddenAnswer;
+    int gameRound;
 
     private void checkValidation(String inputGuess)
             throws InputGuessInvalidException,
@@ -24,80 +28,94 @@ public class ServiceLayerImpl implements ServiceLayer {
         }
     }
 
-    private boolean checkExactMatch(String inputGuess, String answer) {
+    private int checkExactMatch(String inputGuess ) throws SQLException {
         char [] input = inputGuess.toCharArray();
-        char [] ans = answer.toCharArray();
+        char [] ans = hiddenAnswer.toCharArray();
         int count = 0;
 
         for (int i = 0; i < input.length ; i++) {
             if(input[i] == ans[i]) count++;
         }
 
-        if(count == 4) {
+        return count;
+    }
 
-            // Update the inputAnswer
-            // update the status of the game
 
+    private int checkPartialMatch(String inputGuess) {
+        char [] input = inputGuess.toCharArray();
+        char [] ans = hiddenAnswer.toCharArray();
+
+        int count = 0;
+
+        for (int i = 0; i < ans.length; i++) {
+            for(int j = 0; j < input.length; j++){
+                if(ans[i] == input[j] && i != j) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public void addGame() throws SQLException {
+        // Set hidden answer into memory
+        hiddenAnswer = numberGenerator.getRandomNumber();
+
+        // Set game rounds into memory
+        gameRound = 0;
+
+        // Adding game into memory
+        dao.addGame(hiddenAnswer);
+    }
+
+    @Override
+    public void getGameById(String gameId) throws SQLException {
+        dao.getGame(gameId);
+    }
+
+    @Override
+    public void getAllGames() throws SQLException {
+        dao.getAllGames();
+    }
+
+    @Override
+    public boolean addGuess(String gameId, String inputGuess)
+            throws InputGuessInvalidException,
+            InputGuessInvalidLength, SQLException {
+        checkValidation(inputGuess);
+
+        // Checks for exact match
+        int exactMatchCount = checkExactMatch(inputGuess );
+        // Checks for partial match
+        int partialMatchCount = checkPartialMatch(inputGuess);
+        gameRound++;
+
+
+        if(exactMatchCount == 4) {
+            // Ends game if exactMatchCount is four
+            dao.addRound(gameId, gameRound, inputGuess, partialMatchCount, exactMatchCount);
+            // Updates the state of the game.
+            dao.updateGameStatus(gameId);
             return true;
         }
-        else {
-            // Update the inputAnswer in DAOdb
-            // Update the status of the game
-
-
+        else{
+            // Adds a round into the game
+            dao.addRound(gameId, gameRound, inputGuess, partialMatchCount, exactMatchCount);
             return false;
         }
 
 
-
-
-    }
-
-
-    private void checkPartialMatch(String inputGuess, String answer) {
-        char [] input = inputGuess.toCharArray();
-        char [] ans = answer.toCharArray();
-
-
     }
 
     @Override
-    public void addGame() {
-        String value = r.getRandomNumber();
-        // Calling addGame from the database.
-
+    public void getRoundBasedOnGameID(String gameId) throws SQLException {
+        dao.getRounds(gameId);
     }
 
     @Override
-    public void getGameById(String id) {
-
-    }
-
-    @Override
-    public void getAllGames() {
-
-    }
-
-    @Override
-    public boolean addGuess(String inputGuess)
-            throws InputGuessInvalidException,
-            InputGuessInvalidLength {
-        checkValidation(inputGuess);
-        // Get database answer and compare it to input guess.
-        String answer = null;  // Need to call getAnswer from DAOdb
-        checkPartialMatch(inputGuess, answer);
-
-        // pass answer and compare it to input guess.
-        boolean isExactMatch = checkExactMatch(inputGuess, answer);
-
-        if(isExactMatch) return true;
-        else return false;
-
-
-    }
-
-    @Override
-    public void getRoundBasedOnGameID() {
-
+    public void setUpDatabase() {
+        dao.setUpDatabase();
     }
 }
