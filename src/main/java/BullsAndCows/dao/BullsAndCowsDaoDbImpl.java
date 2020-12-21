@@ -97,7 +97,7 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
         }
     }
 
-    private DataSource getDataSource() throws SQLException {
+    private static DataSource getDataSource() throws SQLException {
         MysqlDataSource ds = new MysqlDataSource();
         ds.setServerName("localhost");
         ds.setDatabaseName("BullsAndCowsDB");
