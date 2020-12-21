@@ -54,9 +54,8 @@ public class BullsAndCowsDaoDbImpl {
 
     public void addGame(String answer) throws SQLException {
 
-        
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Game(GameID, ) VALUES(?)";
+            String sql = "INSERT INTO Game(GameID) VALUES(?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, answer);
             pStmt.executeUpdate();
@@ -80,7 +79,7 @@ public class BullsAndCowsDaoDbImpl {
 
     public void updateGameStatus(String gameId) throws SQLException{
         try (Connection conn = ds.getConnection()) {
-            String sql = "UPDATE Game SET  finished = True WHERE id = ?";
+            String sql = "UPDATE Game SET finished = True WHERE id = ?";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.executeUpdate();
