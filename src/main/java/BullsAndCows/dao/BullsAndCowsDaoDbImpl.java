@@ -6,6 +6,9 @@
 package BullsAndCows.dao;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +20,9 @@ import javax.sql.DataSource;
  *
  * @author johnr
  */
+
+@Repository
+@Profile("database")
 public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     
     private static DataSource ds;
