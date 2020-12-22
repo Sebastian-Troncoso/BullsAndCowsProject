@@ -8,6 +8,9 @@ package BullsAndCows.dao;
 import BullsAndCows.dto.Game;
 import BullsAndCows.dto.Round;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

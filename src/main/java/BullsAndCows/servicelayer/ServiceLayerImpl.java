@@ -86,18 +86,18 @@ public class ServiceLayerImpl implements ServiceLayer {
         int exactMatchCount = checkExactMatch(inputGuess);
         // Checks for partial match
         int partialMatchCount = checkPartialMatch(inputGuess);
-        int roundGame = 0;
+
 
         if(exactMatchCount == 4) {
             // Ends game if exactMatchCount is four
-            dao.addRound(gameId, roundGame, inputGuess, partialMatchCount, exactMatchCount);
+            dao.addRound(gameId,inputGuess, partialMatchCount, exactMatchCount);
             // Updates the state of the game.
             dao.updateGameStatus(gameId);
             return true;
         }
         else{
             // Adds a round into the game
-            dao.addRound(gameId,roundGame, inputGuess, partialMatchCount, exactMatchCount);
+            dao.addRound(gameId, inputGuess, partialMatchCount, exactMatchCount);
             return false;
         }
 
