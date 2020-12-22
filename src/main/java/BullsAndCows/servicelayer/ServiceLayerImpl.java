@@ -15,7 +15,6 @@ public class ServiceLayerImpl implements ServiceLayer {
     RandomNumberNoDuplicate numberGenerator = new RandomNumberNoDuplicate();
     BullsAndCowsDao dao = new BullsAndCowsDaoDbImpl();
     String hiddenAnswer;
-    int gameRound;
 
     private void checkValidation(String inputGuess)
             throws InputGuessInvalidException,
@@ -63,9 +62,6 @@ public class ServiceLayerImpl implements ServiceLayer {
         // Set hidden answer into memory
         hiddenAnswer = numberGenerator.getRandomNumber();
 
-        // Set game rounds into memory
-        gameRound = 0;
-
         // Adding game into memory
         dao.addGame(hiddenAnswer);
     }
@@ -87,15 +83,14 @@ public class ServiceLayerImpl implements ServiceLayer {
         checkValidation(inputGuess);
 
         // Checks for exact match
-        int exactMatchCount = checkExactMatch(inputGuess );
+        int exactMatchCount = checkExactMatch(inputGuess);
         // Checks for partial match
         int partialMatchCount = checkPartialMatch(inputGuess);
-        gameRound++;
 
 
         if(exactMatchCount == 4) {
             // Ends game if exactMatchCount is four
-            dao.addRound(gameId, inputGuess, partialMatchCount, exactMatchCount);
+            dao.addRound(gameId,inputGuess, partialMatchCount, exactMatchCount);
             // Updates the state of the game.
             dao.updateGameStatus(gameId);
             return true;
