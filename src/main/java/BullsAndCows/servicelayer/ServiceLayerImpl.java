@@ -7,14 +7,21 @@ import BullsAndCows.dto.RandomNumberNoDuplicate;
 import BullsAndCows.exception.InputGuessInvalidException;
 import BullsAndCows.exception.InputGuessInvalidLength;
 import com.mysql.cj.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
-
+@Component
 public class ServiceLayerImpl implements ServiceLayer {
 
     RandomNumberNoDuplicate numberGenerator = new RandomNumberNoDuplicate();
-    BullsAndCowsDao dao = new BullsAndCowsDaoDbImpl();
+    BullsAndCowsDao dao;
     String hiddenAnswer;
+
+    @Autowired
+    ServiceLayerImpl(BullsAndCowsDao dao) {
+        this.dao = dao;
+    }
 
     private void checkValidation(String inputGuess)
             throws InputGuessInvalidException,
