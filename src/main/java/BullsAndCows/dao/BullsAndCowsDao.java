@@ -5,20 +5,21 @@
  */
 package BullsAndCows.dao;
 
-import javax.sql.DataSource;
-import java.sql.ResultSet;
+import BullsAndCows.dto.Game;
+import BullsAndCows.dto.Round;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
  * @author johnr
  */
 public interface BullsAndCowsDao {
-    ResultSet getAllGames() throws SQLException;
-    ResultSet getRounds(String gameId) throws SQLException;
-    ResultSet getGame(String gameId) throws SQLException;
+    List<Game> getAllGames() throws SQLException;
+    List<Round> getRounds(String gameId) throws SQLException;
+    Game getGame(String gameId) throws SQLException;
     void addGame(String answer) throws SQLException;
-    void addRound(String gameId, int round, String userGuess, int partialMatch, int ExactMatch ) throws SQLException;
+    void addRound(String gameId, String userGuess, int partialMatch, int ExactMatch ) throws SQLException;
     void updateGameStatus(String gameId) throws SQLException;
     void setUpDatabase();
 }
