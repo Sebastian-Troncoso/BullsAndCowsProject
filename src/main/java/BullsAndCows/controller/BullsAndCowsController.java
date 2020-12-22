@@ -3,6 +3,7 @@ package BullsAndCows.controller;
 import BullsAndCows.dao.BullsAndCowsDaoDbImpl;
 import BullsAndCows.servicelayer.ServiceLayer;
 import BullsAndCows.servicelayer.ServiceLayerImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ public class BullsAndCowsController {
 
     ServiceLayer service;
 
+    @Autowired
     BullsAndCowsController(ServiceLayer service) {
         this.service = service;
     }
@@ -23,7 +25,7 @@ public class BullsAndCowsController {
         connectToDatabase();
     }
 
-    @PostMapping(path = "")
+    @PostMapping()
     public ResponseEntity<Void> createGame() throws SQLException {
         service.addGame();
         return new ResponseEntity<>(HttpStatus.CREATED);
