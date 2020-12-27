@@ -5,7 +5,6 @@ import app.dto.Game;
 import app.exception.InputGuessInvalidException;
 import app.exception.InputGuessInvalidLength;
 import app.servicelayer.ServiceLayer;
-import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,14 +40,14 @@ public class BullsAndCowsController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping
+    @PostMapping("/{id}")
     //Need to working on this part
     public void guessAnswer(@PathVariable String gameID, @RequestBody String guess )
             throws InputGuessInvalidLength,
             InputGuessInvalidException,
             SQLException {
         System.out.println("This is the game ID: " +gameID + " This is the guess answer: " + guess);
-        //service.addGuess(gameID, guess);
+        service.addGuess(gameID, guess);
     }
 
 
