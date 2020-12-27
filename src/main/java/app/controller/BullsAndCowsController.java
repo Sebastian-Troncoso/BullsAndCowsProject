@@ -2,6 +2,7 @@ package app.controller;
 
 import app.dao.BullsAndCowsDao;
 import app.dto.Game;
+import app.dto.Round;
 import app.exception.InputGuessInvalidException;
 import app.exception.InputGuessInvalidLength;
 import app.servicelayer.ServiceLayer;
@@ -26,12 +27,23 @@ public class BullsAndCowsController {
         this.dao = dao;
     }
 
-    @GetMapping
+    @GetMapping()
     public List<Game> getGames() throws SQLException {
         connectToDatabase();
         return service.getAllGames();
     }
 
+    @GetMapping("/{id}")
+    public Game getGamebyId(@PathVariable String gameId) throws SQLException {
+        connectToDatabase();
+        return service.getGameById(gameId);
+    }
+    
+    @GetMapping("/round/{id}")
+    public List<Round> getRoundsByGameId(@PathVariable String gameId) throws SQLException {
+        connectToDatabase();
+        return service.getRoundBasedOnGameID(gameId);
+    }
 
     @PostMapping()
     public ResponseEntity<Void> createGame() throws SQLException {
@@ -49,8 +61,7 @@ public class BullsAndCowsController {
         System.out.println("This is the game ID: " +gameID + " This is the guess answer: " + guess);
         service.addGuess(gameID, guess);
     }
-
-
+    
 
     private void connectToDatabase() {
         service.setUpDatabase();
