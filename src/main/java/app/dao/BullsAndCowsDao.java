@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package BullsAndCows.dao;
+package app.dao;
 
-import BullsAndCows.dto.Game;
-import BullsAndCows.dto.Round;
+import app.dto.Game;
+import app.dto.Round;
 import java.sql.SQLException;
 import java.util.List;
 

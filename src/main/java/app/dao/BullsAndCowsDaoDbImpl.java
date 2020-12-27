@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package BullsAndCows.dao;
+package app.dao;
 
-import BullsAndCows.dto.Game;
-import BullsAndCows.dto.Round;
+import app.dto.Game;
+import app.dto.Round;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -26,6 +26,8 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     
     private static DataSource ds;
 
+
+
     @Override
     public void setUpDatabase() {
         try {
@@ -41,12 +43,12 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     public List<Game> getAllGames() throws SQLException{
         try ( Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Game");
-            ArrayList<Game> gameList = new ArrayList<>();
+            ResultSet rs = stmt.executeQuery("SELECT GameID, Answer, finished FROM Game");
+            List<Game> gameList = new ArrayList<>();
             while(rs.next()){
-                gameList.add(new Game(rs.getString("GameId"),
+                gameList.add(new Game(rs.getString("GameID"),
                     rs.getString("Answer"),
-                    rs.getBoolean("InProgress")));
+                    rs.getBoolean("finished")));
             }
             return gameList;
         }
@@ -83,9 +85,10 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     @Override
     public void addGame(String hiddenAnswer) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Game(GameID) VALUES(?)";
+            String sql = "INSERT INTO Game(Answer, finished) VALUES(?, ?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, hiddenAnswer);
+            pStmt.setBoolean(2, false);
             pStmt.executeUpdate();
             //System.out.println("Add Complete");
         }
@@ -94,7 +97,7 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     @Override
     public void addRound(String gameId, String userGuess, int partialMatch, int ExactMatch ) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Round(GameID,, guess, partialMatch, ExactMatch) VALUES(?, ?,?,?,?)";
+            String sql = "INSERT INTO Round(GameID, guess, partialMatch, ExactMatch) VALUES(?, ?,?,?,?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.setString(2, userGuess);
