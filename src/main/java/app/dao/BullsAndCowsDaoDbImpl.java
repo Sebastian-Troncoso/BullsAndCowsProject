@@ -95,27 +95,27 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     }
     
     @Override
-    public void addRound(String gameId, String userGuess, int partialMatch, int ExactMatch ) throws SQLException {
+    public void addRound(String gameId, String userGuess, int partialMatch, int exactMatch ) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Round(GameID, guess, partialMatch, ExactMatch) VALUES(?, ?,?,?,?)";
+            String sql = "INSERT INTO Round(GameID, guess, partialMatch, ExactMatch) VALUES(?, ?, ?, ?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.setString(2, userGuess);
             pStmt.setInt(3, partialMatch);
-            pStmt.setInt(4, ExactMatch);
+            pStmt.setInt(4, exactMatch);
             pStmt.executeUpdate();
-            //System.out.println("Add Complete");
+            System.out.println("Add Complete");
         }
     }
     
     @Override
     public void updateGameStatus(String gameId) throws SQLException{
         try (Connection conn = ds.getConnection()) {
-            String sql = "UPDATE Game SET finished = True WHERE id = ?";
+            String sql = "UPDATE Game SET finished = true WHERE GameID = ?";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.executeUpdate();
-            //System.out.println("Update Complete");
+            System.out.println("Update Complete");
         }
     }
 
@@ -136,7 +136,9 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     public String getAnswer(String gameId) throws SQLException {
         try( Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Game WHERE GameId = " + gameId );
+            System.out.println("Game ID: " + gameId);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Game WHERE GameID = " + gameId );
+            rs.next();
             return rs.getString("Answer");
         }
     }

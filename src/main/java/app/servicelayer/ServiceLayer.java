@@ -15,7 +15,7 @@ public interface ServiceLayer {
     void addGame() throws SQLException;
     Game getGameById(String gameId) throws SQLException;
     List<Game> getAllGames() throws SQLException;
-    boolean addGuess(String gameId, String inputGuess) throws InputGuessInvalidException, InputGuessInvalidLength, SQLException;
+    List<Round> addGuess(String gameId, String inputGuess) throws InputGuessInvalidException, InputGuessInvalidLength, SQLException;
     List<Round> getRoundBasedOnGameID(String gameId) throws SQLException;
     void setUpDatabase();
 }

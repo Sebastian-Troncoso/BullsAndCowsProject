@@ -46,20 +46,21 @@ public class BullsAndCowsController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createGame() throws SQLException {
+    public ResponseEntity createGame() throws SQLException {
         connectToDatabase();
         service.addGame();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/guess")
     //Need to working on this part
-    public void guessAnswer(@PathVariable String gameID, @RequestBody String guess )
+    public List<Round> guessAnswer(String gameID, String guess )
             throws InputGuessInvalidLength,
             InputGuessInvalidException,
             SQLException {
+        connectToDatabase();
         System.out.println("This is the game ID: " +gameID + " This is the guess answer: " + guess);
-        service.addGuess(gameID, guess);
+        return service.addGuess(gameID, guess);
     }
     
 
