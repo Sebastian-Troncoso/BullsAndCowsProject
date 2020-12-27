@@ -1,13 +1,12 @@
-package BullsAndCows.servicelayer;
+package app.servicelayer;
 
 
-import BullsAndCows.dao.BullsAndCowsDao;
-import BullsAndCows.dao.BullsAndCowsDaoDbImpl;
-import BullsAndCows.dto.Game;
-import BullsAndCows.dto.RandomNumberNoDuplicate;
-import BullsAndCows.dto.Round;
-import BullsAndCows.exception.InputGuessInvalidException;
-import BullsAndCows.exception.InputGuessInvalidLength;
+import app.dao.BullsAndCowsDao;
+import app.dto.Game;
+import app.dto.RandomNumberNoDuplicate;
+import app.dto.Round;
+import app.exception.InputGuessInvalidException;
+import app.exception.InputGuessInvalidLength;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
