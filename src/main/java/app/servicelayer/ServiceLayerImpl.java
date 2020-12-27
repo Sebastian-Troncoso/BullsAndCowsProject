@@ -97,7 +97,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public boolean addGuess(String gameId, String inputGuess)
+    public List<Round> addGuess(String gameId, String inputGuess)
             throws InputGuessInvalidException,
             InputGuessInvalidLength, SQLException {
         checkValidation(inputGuess);
@@ -113,13 +113,28 @@ public class ServiceLayerImpl implements ServiceLayer {
             dao.addRound(gameId,inputGuess, partialMatchCount, exactMatchCount);
             // Updates the state of the game.
             dao.updateGameStatus(gameId);
-            return true;
+
+            List<Round> rounds = dao.getRounds(gameId);
+            for (Round r: rounds){
+                if(r.getExactMatch() != 4){
+                    r.setGuess("----");
+                }
+            }
+            return rounds;
         }
         else{
             // Adds a round into the game
             dao.addRound(gameId, inputGuess, partialMatchCount, exactMatchCount);
-            return false;
+
+            List<Round> rounds = dao.getRounds(gameId);
+            for (Round r: rounds){
+                if(r.getExactMatch() != 4){
+                    r.setGuess("----");
+                }
+            }
+            return rounds;
         }
+
 
 
     }

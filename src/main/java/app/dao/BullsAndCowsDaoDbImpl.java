@@ -111,11 +111,11 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     @Override
     public void updateGameStatus(String gameId) throws SQLException{
         try (Connection conn = ds.getConnection()) {
-            String sql = "UPDATE Game SET finished = True WHERE id = ?";
+            String sql = "UPDATE Game SET finished = true WHERE GameID = ?";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.executeUpdate();
-            //System.out.println("Update Complete");
+            System.out.println("Update Complete");
         }
     }
 
