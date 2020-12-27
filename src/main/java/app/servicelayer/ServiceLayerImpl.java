@@ -36,9 +36,10 @@ public class ServiceLayerImpl implements ServiceLayer {
         }
     }
 
-    private int checkExactMatch(String inputGuess ) throws SQLException {
+    private int checkExactMatch(String gameId, String inputGuess) throws SQLException {
         char [] input = inputGuess.toCharArray();
-        char [] ans = hiddenAnswer.toCharArray();
+        char [] ans = dao.getAnswer(gameId).toCharArray();
+        System.out.println("This is the length of char array: " + ans.length);
         int count = 0;
 
         for (int i = 0; i < input.length ; i++) {
@@ -49,9 +50,9 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
 
-    private int checkPartialMatch(String inputGuess) {
+    private int checkPartialMatch(String gameId, String inputGuess) throws SQLException {
         char [] input = inputGuess.toCharArray();
-        char [] ans = hiddenAnswer.toCharArray();
+        char [] ans = dao.getAnswer(gameId).toCharArray();
 
         int count = 0;
 
@@ -88,7 +89,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     public List<Game> getAllGames() throws SQLException {
         List<Game> outputGames= dao.getAllGames();
         for(Game g: outputGames){
-            if (g.isInProgress()){
+            if (!g.isInProgress()){
                 g.setAnswer("----");
             }
         }
@@ -102,9 +103,9 @@ public class ServiceLayerImpl implements ServiceLayer {
         checkValidation(inputGuess);
 
         // Checks for exact match
-        int exactMatchCount = checkExactMatch(inputGuess);
+        int exactMatchCount = checkExactMatch(gameId, inputGuess);
         // Checks for partial match
-        int partialMatchCount = checkPartialMatch(inputGuess);
+        int partialMatchCount = checkPartialMatch(gameId, inputGuess);
 
 
         if(exactMatchCount == 4) {

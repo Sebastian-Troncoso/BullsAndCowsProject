@@ -26,7 +26,7 @@ public class BullsAndCowsController {
         this.dao = dao;
     }
 
-    @GetMapping
+    @GetMapping()
     public List<Game> getGames() throws SQLException {
         connectToDatabase();
         return service.getAllGames();
@@ -34,18 +34,19 @@ public class BullsAndCowsController {
 
 
     @PostMapping()
-    public ResponseEntity<Void> createGame() throws SQLException {
+    public ResponseEntity createGame() throws SQLException {
         connectToDatabase();
         service.addGame();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/guess")
     //Need to working on this part
-    public void guessAnswer(@PathVariable String gameID, @RequestBody String guess )
+    public void guessAnswer( String gameID, String guess )
             throws InputGuessInvalidLength,
             InputGuessInvalidException,
             SQLException {
+        connectToDatabase();
         System.out.println("This is the game ID: " +gameID + " This is the guess answer: " + guess);
         service.addGuess(gameID, guess);
     }
