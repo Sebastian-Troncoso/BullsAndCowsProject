@@ -27,10 +27,6 @@ public class BullsAndCowsController {
         this.dao = dao;
     }
 
-
-
-
-
     @GetMapping
     public List<Game> getGames() throws SQLException {
         connectToDatabase();
@@ -51,7 +47,8 @@ public class BullsAndCowsController {
             throws InputGuessInvalidLength,
             InputGuessInvalidException,
             SQLException {
-            service.addGuess(gameID, guess);
+        System.out.println("This is the game ID: " +gameID + " This is the guess answer: " + guess);
+        //service.addGuess(gameID, guess);
     }
 
 
