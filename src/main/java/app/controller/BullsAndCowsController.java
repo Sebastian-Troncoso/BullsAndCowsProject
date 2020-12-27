@@ -33,6 +33,17 @@ public class BullsAndCowsController {
         return service.getAllGames();
     }
 
+    @GetMapping("/{id}")
+    public Game getGamebyId(@PathVariable String gameId) throws SQLException {
+        connectToDatabase();
+        return service.getGameById(gameId);
+    }
+    
+    @GetMapping("/round/{id}")
+    public List<Round> getRoundsByGameId(@PathVariable String gameId) throws SQLException {
+        connectToDatabase();
+        return service.getRoundBasedOnGameID(gameId);
+    }
 
     @PostMapping()
     public ResponseEntity createGame() throws SQLException {
@@ -51,8 +62,7 @@ public class BullsAndCowsController {
         System.out.println("This is the game ID: " +gameID + " This is the guess answer: " + guess);
         return service.addGuess(gameID, guess);
     }
-
-
+    
 
     private void connectToDatabase() {
         service.setUpDatabase();
