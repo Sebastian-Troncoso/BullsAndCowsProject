@@ -1,9 +1,11 @@
-package BullsAndCows.servicelayer;
+package app.servicelayer;
 
-import BullsAndCows.dto.Game;
-import BullsAndCows.dto.Round;
-import BullsAndCows.exception.InputGuessInvalidException;
-import BullsAndCows.exception.InputGuessInvalidLength;
+
+import app.dto.Game;
+import app.dto.Round;
+import app.exception.InputGuessInvalidException;
+import app.exception.InputGuessInvalidLength;
+
 import java.sql.SQLException;
 import java.util.List;
 
