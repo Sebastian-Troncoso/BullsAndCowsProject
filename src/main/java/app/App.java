@@ -1,8 +1,5 @@
-package BullsAndCows.app;
+package app;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
-import java.sql.SQLException;
-import javax.activation.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

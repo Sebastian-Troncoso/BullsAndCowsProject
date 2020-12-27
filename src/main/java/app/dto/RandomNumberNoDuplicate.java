@@ -1,4 +1,4 @@
-package BullsAndCows.dto;
+package app.dto;
 
 import java.util.LinkedHashSet;
 import java.util.Random;

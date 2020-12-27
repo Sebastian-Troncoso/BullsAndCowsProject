@@ -1,4 +1,4 @@
-package BullsAndCows.exception;
+package app.exception;
 
 public class InputGuessInvalidException extends Exception {
 
