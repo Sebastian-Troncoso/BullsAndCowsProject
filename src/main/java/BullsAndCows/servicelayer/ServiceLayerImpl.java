@@ -3,14 +3,17 @@ package BullsAndCows.servicelayer;
 
 import BullsAndCows.dao.BullsAndCowsDao;
 import BullsAndCows.dao.BullsAndCowsDaoDbImpl;
+import BullsAndCows.dto.Game;
 import BullsAndCows.dto.RandomNumberNoDuplicate;
+import BullsAndCows.dto.Round;
 import BullsAndCows.exception.InputGuessInvalidException;
 import BullsAndCows.exception.InputGuessInvalidLength;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 @Component
 public class ServiceLayerImpl implements ServiceLayer {
 
@@ -74,13 +77,23 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public void getGameById(String gameId) throws SQLException {
-        dao.getGame(gameId);
+    public Game getGameById(String gameId) throws SQLException {
+        Game outputGame = dao.getGame(gameId);
+        if (outputGame.isInProgress()){
+            outputGame.setAnswer("----");
+        }
+        return outputGame;
     }
 
     @Override
-    public void getAllGames() throws SQLException {
-        dao.getAllGames();
+    public List<Game> getAllGames() throws SQLException {
+        List<Game> outputGames= dao.getAllGames();
+        for(Game g: outputGames){
+            if (g.isInProgress()){
+                g.setAnswer("----");
+            }
+        }
+        return outputGames;
     }
 
     @Override
@@ -112,8 +125,8 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public void getRoundBasedOnGameID(String gameId) throws SQLException {
-        dao.getRounds(gameId);
+    public List<Round> getRoundBasedOnGameID(String gameId) throws SQLException {
+        return dao.getRounds(gameId);
     }
 
     @Override
