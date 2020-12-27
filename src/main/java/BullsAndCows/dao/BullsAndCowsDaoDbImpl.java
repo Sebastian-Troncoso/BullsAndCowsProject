@@ -128,4 +128,13 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
 
         return ds;
     }
+
+    @Override
+    public String getAnswer(String gameId) throws SQLException {
+        try( Connection conn = ds.getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Game WHERE GameId = " + gameId );
+            return rs.getString("Answer");
+        }
+    }
 }
