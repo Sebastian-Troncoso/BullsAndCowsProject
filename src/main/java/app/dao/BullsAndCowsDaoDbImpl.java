@@ -10,7 +10,6 @@ import app.dto.Round;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,8 +24,6 @@ import javax.sql.DataSource;
 public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     
     private static DataSource ds;
-
-
 
     @Override
     public void setUpDatabase() {
@@ -91,21 +88,19 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
             pStmt.setString(1, hiddenAnswer);
             pStmt.setBoolean(2, true);
             pStmt.executeUpdate();
-            //System.out.println("Add Complete");
         }
     }
     
     @Override
     public void addRound(String gameId, String userGuess, int partialMatch, int exactMatch ) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Round(GameID, guess, partialMatch, ExactMatch) VALUES(?, ?, ?, ?)";
+            String sql = "INSERT INTO Round(GameID, Guess, PartialMatch, ExactMatch) VALUES(?, ?, ?, ?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.setString(2, userGuess);
             pStmt.setInt(3, partialMatch);
             pStmt.setInt(4, exactMatch);
             pStmt.executeUpdate();
-            System.out.println("Add Complete");
         }
     }
     
@@ -116,7 +111,6 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.executeUpdate();
-            System.out.println("Update Complete");
         }
     }
 

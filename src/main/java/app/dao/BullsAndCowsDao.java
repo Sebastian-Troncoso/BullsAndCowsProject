@@ -15,12 +15,20 @@ import java.util.List;
  * @author johnr
  */
 public interface BullsAndCowsDao {
+
     List<Game> getAllGames() throws SQLException;
+
     List<Round> getRounds(String gameId) throws SQLException;
+
     Game getGame(String gameId) throws SQLException;
+
     String getAnswer (String gameId) throws SQLException;
+
     void addGame(String answer) throws SQLException;
+
     void addRound(String gameId, String userGuess, int partialMatch, int ExactMatch ) throws SQLException;
+
     void updateGameStatus(String gameId) throws SQLException;
+
     void setUpDatabase();
 }

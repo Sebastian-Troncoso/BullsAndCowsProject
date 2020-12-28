@@ -31,15 +31,11 @@ public class Game {
     public boolean isInProgress(){
         return inProgress;
     }
-    
-    public void setGameId(String newGameId){
-        gameId = newGameId;
-    }
-    
+
     public void setAnswer(String newAnswer){
         answer = newAnswer;
     }
-    
+
     public void setInProgress(Boolean newInProgress){
         inProgress = newInProgress;
     }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -30,37 +29,40 @@ public class BullsAndCowsController {
 
     @GetMapping()
     public List<Game> getGames() throws SQLException {
+
         connectToDatabase();
         return service.getAllGames();
     }
 
     @GetMapping("/{id}")
     public Game getGameById(@PathVariable String id) throws SQLException, InvalidIDException {
+
         connectToDatabase();
         return service.getGameById(id);
     }
     
     @GetMapping("/rounds/{id}")
     public List<Round> getRoundsByGameId(@PathVariable String id) throws SQLException, InvalidIDException {
+
         connectToDatabase();
         return service.getRoundBasedOnGameID(id);
     }
 
     @PostMapping("/create")
     public ResponseEntity createGame() throws SQLException {
+
         connectToDatabase();
         service.addGame();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/guess")
-    //Need to working on this part
-    public List<Round> guessAnswer(String id, String guess )
+    @PostMapping("/guess/{id}/{guess}")
+    public List<Round> guessAnswer(@PathVariable String id, @PathVariable String guess )
             throws InputGuessInvalidLength,
             InputGuessInvalidException,
             SQLException, InvalidIDException {
+
         connectToDatabase();
-        System.out.println("This is the game ID: " +id + " This is the guess answer: " + guess);
         return service.addGuess(id, guess);
     }
     
