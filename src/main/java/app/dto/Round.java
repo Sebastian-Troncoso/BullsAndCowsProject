@@ -45,10 +45,6 @@ public class Round {
         gameId = newGameId;
     }
     
-    public void setRoundId(String newRoundId){
-        roundId = newRoundId;
-    }
-    
     public void setGuess(String newGuess){
         guess = newGuess;
     }

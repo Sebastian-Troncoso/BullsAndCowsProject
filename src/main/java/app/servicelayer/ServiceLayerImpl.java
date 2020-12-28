@@ -12,14 +12,12 @@ import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 @Component
 public class ServiceLayerImpl implements ServiceLayer {
 
     RandomNumberNoDuplicate numberGenerator = new RandomNumberNoDuplicate();
     BullsAndCowsDao dao;
-    String hiddenAnswer;
 
     @Autowired
     ServiceLayerImpl(BullsAndCowsDao dao) {
@@ -29,6 +27,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     private void checkGuessValidation(String inputGuess)
             throws InputGuessInvalidException,
             InputGuessInvalidLength {
+
         if (!StringUtils.isStrictlyNumeric(inputGuess)){
             throw new InputGuessInvalidException("Error: enter a four digit number.");
         }
@@ -40,7 +39,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     private int checkExactMatch(String gameId, String inputGuess) throws SQLException {
         char [] input = inputGuess.toCharArray();
         char [] ans = dao.getAnswer(gameId).toCharArray();
-        System.out.println("This is the length of char array: " + ans.length);
+
         int count = 0;
 
         for (int i = 0; i < input.length ; i++) {
@@ -70,15 +69,11 @@ public class ServiceLayerImpl implements ServiceLayer {
 
     @Override
     public void addGame() throws SQLException {
-        // Set hidden answer into memory
-        hiddenAnswer = numberGenerator.getRandomNumber();
-
-        // Adding game into memory
-        dao.addGame(hiddenAnswer);
+        dao.addGame(numberGenerator.getRandomNumber());
     }
 
     @Override
-    public Game getGameById(String gameId) throws SQLException, InvalidIDException {
+    public Game getGameById(String gameId) throws InvalidIDException {
         Game outputGame = checkGameExistence(gameId);
         if (outputGame.isInProgress()){
             outputGame.setAnswer("----");
@@ -108,52 +103,30 @@ public class ServiceLayerImpl implements ServiceLayer {
         // Checks for correct syntax and existence in table.
         checkForGameOver(gameId);
 
-        // get id fro table.
-
-
-
         // Checks for exact match
         int exactMatchCount = checkExactMatch(gameId, inputGuess);
+
         // Checks for partial match
         int partialMatchCount = checkPartialMatch(gameId, inputGuess);
-
 
         if(exactMatchCount == 4) {
             // Ends game if exactMatchCount is four
             dao.addRound(gameId,inputGuess, partialMatchCount, exactMatchCount);
             // Updates the state of the game.
             dao.updateGameStatus(gameId);
-
-            List<Round> rounds = dao.getRounds(gameId);
-//            for (Round r: rounds){
-//                if(r.getExactMatch() != 4){
-//                    r.setGuess("----");
-//                }
-//            }
-            return rounds;
         }
         else{
             // Adds a round into the game
             dao.addRound(gameId, inputGuess, partialMatchCount, exactMatchCount);
-
-            String result = "";
-            List<Round> rounds = dao.getRounds(gameId);
-//            for (Round r: rounds){
-//                if(r.getExactMatch() != 4){
-//                    r.setGuess("----");
-//                }
-//            }
-//
-            return rounds;
         }
 
-
-
+        return dao.getRounds(gameId);
     }
 
     private void checkForGameOver(String gameId) throws SQLException, InvalidIDException {
         Game g = checkGameExistence(gameId);
-        if(!g.isInProgress()) throw new InvalidIDException("ERROR: game is over.");
+        if(!g.isInProgress())
+            throw new InvalidIDException("ERROR: game is over.");
     }
 
     private Game checkGameExistence(String gameId) throws InvalidIDException {
@@ -168,6 +141,7 @@ public class ServiceLayerImpl implements ServiceLayer {
 
     @Override
     public List<Round> getRoundBasedOnGameID(String gameId) throws SQLException, InvalidIDException {
+
         checkGameExistence(gameId);
         return dao.getRounds(gameId);
     }
