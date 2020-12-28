@@ -89,7 +89,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     public List<Game> getAllGames() throws SQLException {
         List<Game> outputGames= dao.getAllGames();
         for(Game g: outputGames){
-            if (!g.isInProgress()){
+            if (g.isInProgress()){
                 g.setAnswer("----");
             }
         }
@@ -115,23 +115,25 @@ public class ServiceLayerImpl implements ServiceLayer {
             dao.updateGameStatus(gameId);
 
             List<Round> rounds = dao.getRounds(gameId);
-            for (Round r: rounds){
-                if(r.getExactMatch() != 4){
-                    r.setGuess("----");
-                }
-            }
+//            for (Round r: rounds){
+//                if(r.getExactMatch() != 4){
+//                    r.setGuess("----");
+//                }
+//            }
             return rounds;
         }
         else{
             // Adds a round into the game
             dao.addRound(gameId, inputGuess, partialMatchCount, exactMatchCount);
 
+            String result = "";
             List<Round> rounds = dao.getRounds(gameId);
-            for (Round r: rounds){
-                if(r.getExactMatch() != 4){
-                    r.setGuess("----");
-                }
-            }
+//            for (Round r: rounds){
+//                if(r.getExactMatch() != 4){
+//                    r.setGuess("----");
+//                }
+//            }
+//
             return rounds;
         }
 

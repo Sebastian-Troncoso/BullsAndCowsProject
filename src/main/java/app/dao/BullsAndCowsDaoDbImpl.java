@@ -43,12 +43,12 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     public List<Game> getAllGames() throws SQLException{
         try ( Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT GameID, Answer, finished FROM Game");
+            ResultSet rs = stmt.executeQuery("SELECT GameID, Answer, InProgress FROM Game");
             List<Game> gameList = new ArrayList<>();
             while(rs.next()){
                 gameList.add(new Game(rs.getString("GameID"),
                     rs.getString("Answer"),
-                    rs.getBoolean("finished")));
+                    rs.getBoolean("InProgress")));
             }
             return gameList;
         }
@@ -75,8 +75,9 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     public Game getGame(String gameId) throws SQLException{
         try( Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Game WHERE GameId = " + gameId );
-            return new Game(rs.getString("GameId"),
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Game WHERE GameID = " + gameId );
+            rs.next();
+            return new Game(rs.getString("GameID"),
                 rs.getString("Answer"),
                 rs.getBoolean("InProgress"));
         }
@@ -85,10 +86,10 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     @Override
     public void addGame(String hiddenAnswer) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO Game(Answer, finished) VALUES(?, ?)";
+            String sql = "INSERT INTO Game(Answer, InProgress) VALUES(?, ?)";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, hiddenAnswer);
-            pStmt.setBoolean(2, false);
+            pStmt.setBoolean(2, true);
             pStmt.executeUpdate();
             //System.out.println("Add Complete");
         }
@@ -111,7 +112,7 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     @Override
     public void updateGameStatus(String gameId) throws SQLException{
         try (Connection conn = ds.getConnection()) {
-            String sql = "UPDATE Game SET finished = true WHERE GameID = ?";
+            String sql = "UPDATE Game SET InProgress = false WHERE GameID = ?";
             PreparedStatement pStmt = conn.prepareCall(sql);
             pStmt.setString(1, gameId);
             pStmt.executeUpdate();

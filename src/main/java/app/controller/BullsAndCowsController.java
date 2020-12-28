@@ -34,15 +34,15 @@ public class BullsAndCowsController {
     }
 
     @GetMapping("/{id}")
-    public Game getGamebyId(@PathVariable String gameId) throws SQLException {
+    public Game getGameById(@PathVariable String id) throws SQLException {
         connectToDatabase();
-        return service.getGameById(gameId);
+        return service.getGameById(id);
     }
     
     @GetMapping("/round/{id}")
-    public List<Round> getRoundsByGameId(@PathVariable String gameId) throws SQLException {
+    public List<Round> getRoundsByGameId(@PathVariable String id) throws SQLException {
         connectToDatabase();
-        return service.getRoundBasedOnGameID(gameId);
+        return service.getRoundBasedOnGameID(id);
     }
 
     @PostMapping()
