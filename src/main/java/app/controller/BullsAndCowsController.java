@@ -5,6 +5,7 @@ import app.dto.Game;
 import app.dto.Round;
 import app.exception.InputGuessInvalidException;
 import app.exception.InputGuessInvalidLength;
+import app.exception.InvalidIDException;
 import app.servicelayer.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,18 +35,18 @@ public class BullsAndCowsController {
     }
 
     @GetMapping("/{id}")
-    public Game getGamebyId(@PathVariable String gameId) throws SQLException {
+    public Game getGameById(@PathVariable String id) throws SQLException, InvalidIDException {
         connectToDatabase();
-        return service.getGameById(gameId);
+        return service.getGameById(id);
     }
     
-    @GetMapping("/round/{id}")
-    public List<Round> getRoundsByGameId(@PathVariable String gameId) throws SQLException {
+    @GetMapping("/rounds/{id}")
+    public List<Round> getRoundsByGameId(@PathVariable String id) throws SQLException, InvalidIDException {
         connectToDatabase();
-        return service.getRoundBasedOnGameID(gameId);
+        return service.getRoundBasedOnGameID(id);
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity createGame() throws SQLException {
         connectToDatabase();
         service.addGame();
@@ -54,13 +55,13 @@ public class BullsAndCowsController {
 
     @PostMapping("/guess")
     //Need to working on this part
-    public List<Round> guessAnswer(String gameID, String guess )
+    public List<Round> guessAnswer(String id, String guess )
             throws InputGuessInvalidLength,
             InputGuessInvalidException,
-            SQLException {
+            SQLException, InvalidIDException {
         connectToDatabase();
-        System.out.println("This is the game ID: " +gameID + " This is the guess answer: " + guess);
-        return service.addGuess(gameID, guess);
+        System.out.println("This is the game ID: " +id + " This is the guess answer: " + guess);
+        return service.addGuess(id, guess);
     }
     
 
