@@ -58,11 +58,11 @@ public class BullsAndCowsDaoDbImpl implements BullsAndCowsDao {
     public List<Round> getRounds(String gameId) throws SQLException{
         try( Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Round WHERE GameId = " + gameId );
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Round WHERE GameID = " + gameId );
             ArrayList<Round> roundList = new ArrayList<>();
             while(rs.next()){
-                roundList.add(new Round(rs.getString("RoundId"),
-                    rs.getString("GameId"),
+                roundList.add(new Round(rs.getString("RoundID"),
+                    rs.getString("GameID"),
                     rs.getString("Guess"),
                     rs.getInt("PartialMatch"),
                     rs.getInt("ExactMatch")));

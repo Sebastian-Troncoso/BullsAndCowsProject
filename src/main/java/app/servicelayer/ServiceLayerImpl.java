@@ -7,6 +7,7 @@ import app.dto.RandomNumberNoDuplicate;
 import app.dto.Round;
 import app.exception.InputGuessInvalidException;
 import app.exception.InputGuessInvalidLength;
+import app.exception.InvalidIDException;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,11 +26,11 @@ public class ServiceLayerImpl implements ServiceLayer {
         this.dao = dao;
     }
 
-    private void checkValidation(String inputGuess)
+    private void checkGuessValidation(String inputGuess)
             throws InputGuessInvalidException,
             InputGuessInvalidLength {
         if (!StringUtils.isStrictlyNumeric(inputGuess)){
-            throw new InputGuessInvalidException("Error: enter numeric value.");
+            throw new InputGuessInvalidException("Error: enter a four digit number.");
         }
         if(inputGuess.length() != 4){
             throw new InputGuessInvalidLength("Error: enter a four digit number.");
@@ -77,8 +78,8 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public Game getGameById(String gameId) throws SQLException {
-        Game outputGame = dao.getGame(gameId);
+    public Game getGameById(String gameId) throws SQLException, InvalidIDException {
+        Game outputGame = checkGameExistence(gameId);
         if (outputGame.isInProgress()){
             outputGame.setAnswer("----");
         }
@@ -99,8 +100,17 @@ public class ServiceLayerImpl implements ServiceLayer {
     @Override
     public List<Round> addGuess(String gameId, String inputGuess)
             throws InputGuessInvalidException,
-            InputGuessInvalidLength, SQLException {
-        checkValidation(inputGuess);
+            InputGuessInvalidLength, SQLException, InvalidIDException {
+
+        // Checks for correct syntax
+        checkGuessValidation(inputGuess);
+
+        // Checks for correct syntax and existence in table.
+        checkForGameOver(gameId);
+
+        // get id fro table.
+
+
 
         // Checks for exact match
         int exactMatchCount = checkExactMatch(gameId, inputGuess);
@@ -141,8 +151,24 @@ public class ServiceLayerImpl implements ServiceLayer {
 
     }
 
+    private void checkForGameOver(String gameId) throws SQLException, InvalidIDException {
+        Game g = checkGameExistence(gameId);
+        if(!g.isInProgress()) throw new InvalidIDException("ERROR: game is over.");
+    }
+
+    private Game checkGameExistence(String gameId) throws InvalidIDException {
+        Game g;
+        try {
+            g = dao.getGame(gameId);
+        } catch (Exception e) {
+            throw new InvalidIDException("Game does not exist with id: " + gameId);
+        }
+        return g;
+    }
+
     @Override
-    public List<Round> getRoundBasedOnGameID(String gameId) throws SQLException {
+    public List<Round> getRoundBasedOnGameID(String gameId) throws SQLException, InvalidIDException {
+        checkGameExistence(gameId);
         return dao.getRounds(gameId);
     }
 
